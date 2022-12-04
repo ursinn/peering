@@ -376,9 +376,9 @@ function honor_graceful_shutdown() {
 
 # https://tools.ietf.org/html/rfc7454#section-11
 function scrub_communities_in() {
-  bgp_large_community.delete((OUR_AS, 101, 1));         # Learned from peer
-  bgp_large_community.delete((OUR_AS, 101, 2));         # Learned from private peer
-  bgp_large_community.delete((OUR_AS, 101, 3));         # Learned from IXP
+  bgp_large_community.delete((OUR_AS, 101, 1));         # Originated by you
+  bgp_large_community.delete((OUR_AS, 101, 2));         # Learned from IX
+  bgp_large_community.delete((OUR_AS, 101, 3));         # Learned from private peer
   bgp_large_community.delete((OUR_AS, 101, 4));         # Learned from transit provider
   bgp_large_community.delete((OUR_AS, 101, 5));         # Learned from customer
   bgp_large_community.delete((OUR_AS, 102, REGION_ID)); # Learned in region
