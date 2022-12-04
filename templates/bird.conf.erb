@@ -188,10 +188,14 @@ function as_path_contains_invalid_asn() {
 }
 
 function prefix_is_in_global_blacklist() {
+<%- if config.blacklist.v4 -%>
   if net.type = NET_IP4 then
     if net ~ GLOBAL_BLACKLIST_4 then return true;
+<%- end -%>
+<%- if config.blacklist.v6 -%>
   if net.type = NET_IP6 then
     if net ~ GLOBAL_BLACKLIST_6 then return true;
+<%- end -%>
   return false;
 }
 
@@ -208,28 +212,34 @@ function prefix_is_in_global_whitelist() {
 }
 
 function is_own_prefix() {
+<%- if config.originations.v4 -%>
   if net.type = NET_IP4 then {
     if net ~ ORIGINATED_PREFIXES_4 then {
       bgp_large_community.add((OUR_AS, 101, 1));
       return true;
     }
   }
-
+<%- end -%>
+<%- if config.originations.v6 -%>
   if net.type = NET_IP6 then {
     if net ~ ORIGINATED_PREFIXES_6 then {
       bgp_large_community.add((OUR_AS, 101, 1));
       return true;
     }
   }
-
+<%- end -%>
   return false;
 }
 
 function is_own_internal_prefix() {
+<%- if config.originations.v4 -%>
   if net.type = NET_IP4 then
     if net ~ OUR_INTERNAL_PREFIXES_4 then return true;
+<%- end -%>
+<%- if config.originations.v6 -%>
   if net.type = NET_IP6 then
     if net ~ OUR_INTERNAL_PREFIXES_6 then return true;
+<%- end -%>
   return false;
 }
 
