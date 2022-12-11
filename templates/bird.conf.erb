@@ -343,7 +343,7 @@ function add_as_specific_prepends(int exporting_asn) {
 
 function handle_as_specific_no_export(int exporting_asn) {
   if (OUR_AS, 600, exporting_asn) ~ bgp_large_community then
-    reject "NO_EXPORT community in place for specific AS - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for specific AS - REJECTING ", net;
 }
 
 function add_rpki_community(string rpki_status) {
@@ -452,11 +452,11 @@ function peer_export() {
   if is_own_prefix() then accept;
 
   if route_is_rpki_invalid() then
-    reject "RPKI, route is INVALID - NOT ANNOUNCING ", net;
+    reject "RPKI, route is INVALID - REJECTING ", net;
 
   if is_own_internal_prefix() then {
     if !prefix_is_in_global_whitelist() then
-      reject "prefix is our own and internal - NOT ANNOUNCING ", net;
+      reject "prefix is our own and internal - REJECTING ", net;
   }
 
   if net.type = NET_IP4 then
@@ -468,19 +468,19 @@ function peer_export() {
       reject "prefix len [", net.len, "] not in 12-48 - REJECTING ", net;
 
   if prefix_is_bogon() then
-    reject "prefix is bogon - NOT ANNOUNCING ", net;
+    reject "prefix is bogon - REJECTING ", net;
 
   if as_path_contains_invalid_asn() then
     reject "AS_PATH [", bgp_path ,"] contains invalid ASN - REJECTING ", net;
 
   if should_not_export_to_site() then
-    reject "NO_EXPORT community in place for site - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for site - REJECTING ", net;
 
   if should_not_export_to_region() then
-    reject "NO_EXPORT community in place for region - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for region - REJECTING ", net;
 
   if should_not_export_to_peers() then
-    reject "NO_EXPORT community in place for peers - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for peers - REJECTING ", net;
 
   if prefix_is_in_global_blacklist() then
     reject "prefix is in global blacklist - REJECTING ", net;
@@ -503,11 +503,11 @@ function upstream_export() {
   if is_own_prefix() then accept;
 
   if route_is_rpki_invalid() then
-    reject "RPKI, route is INVALID - NOT ANNOUNCING ", net;
+    reject "RPKI, route is INVALID - REJECTING ", net;
 
   if is_own_internal_prefix() then {
     if !prefix_is_in_global_whitelist() then
-      reject "prefix is our own and internal - NOT ANNOUNCING ", net;
+      reject "prefix is our own and internal - REJECTING ", net;
   }
 
   if net.type = NET_IP4 then
@@ -519,19 +519,19 @@ function upstream_export() {
       reject "prefix len [", net.len, "] not in 12-48 - REJECTING ", net;
 
   if prefix_is_bogon() then
-    reject "prefix is bogon - NOT ANNOUNCING ", net;
+    reject "prefix is bogon - REJECTING ", net;
 
   if as_path_contains_invalid_asn() then
     reject "AS_PATH [", bgp_path ,"] contains invalid ASN - REJECTING ", net;
 
   if should_not_export_to_site() then
-    reject "NO_EXPORT community in place for site - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for site - REJECTING ", net;
 
   if should_not_export_to_region() then
-    reject "NO_EXPORT community in place for region - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for region - REJECTING ", net;
 
   if should_not_export_to_upstreams() then
-    reject "NO_EXPORT community in place for upstreams - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for upstreams - REJECTING ", net;
 
   if prefix_is_in_global_blacklist() then
     reject "prefix is in global blacklist - REJECTING ", net;
@@ -554,11 +554,11 @@ function customer_export() {
   if is_own_prefix() then accept;
 
   if route_is_rpki_invalid() then
-    reject "RPKI, route is INVALID - NOT ANNOUNCING ", net;
+    reject "RPKI, route is INVALID - REJECTING ", net;
 
   if is_own_internal_prefix() then {
     if !prefix_is_in_global_whitelist() then
-      reject "prefix is our own and internal - NOT ANNOUNCING ", net;
+      reject "prefix is our own and internal - REJECTING ", net;
   }
 
   if net.type = NET_IP4 then
@@ -570,19 +570,19 @@ function customer_export() {
       reject "prefix len [", net.len, "] not in 12-48 - REJECTING ", net;
 
   if prefix_is_bogon() then
-    reject "prefix is bogon - NOT ANNOUNCING ", net;
+    reject "prefix is bogon - REJECTING ", net;
 
   if as_path_contains_invalid_asn() then
     reject "AS_PATH [", bgp_path ,"] contains invalid ASN - REJECTING ", net;
 
   if should_not_export_to_site() then
-    reject "NO_EXPORT community in place for site - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for site - REJECTING ", net;
 
   if should_not_export_to_region() then
-    reject "NO_EXPORT community in place for region - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for region - REJECTING ", net;
 
   if should_not_export_to_customers() then
-    reject "NO_EXPORT community in place for customers - NOT ANNOUNCING ", net;
+    reject "NO_EXPORT community in place for customers - REJECTING ", net;
 
   if prefix_is_in_global_blacklist() then
     reject "prefix is in global blacklist - REJECTING ", net;
@@ -596,7 +596,8 @@ function customer_export() {
 }
 
 function core_import() {
-  if prefix_is_bogon() then reject;
+  if prefix_is_bogon() then
+    reject "prefix is bogon - REJECTING ", net;
 
   if prefix_is_in_global_blacklist() then
     reject "prefix is in global blacklist - REJECTING ", net;
@@ -606,7 +607,8 @@ function core_import() {
 }
 
 function core_export() {
-  if prefix_is_bogon() then reject;
+  if prefix_is_bogon() then
+    reject "prefix is bogon - REJECTING ", net;
 
   if prefix_is_in_global_blacklist() then
     reject "prefix is in global blacklist - REJECTING ", net;
